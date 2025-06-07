@@ -1,0 +1,96 @@
+INSERT INTO usuarios (nom_usr, ape_usr, email_usr, tel_usr, pass_usr) VALUES
+('Juan', 'Pérez', 'juan.perez@example.com', '1123456789', 'passwordSegura123'),
+('María', 'García', 'maria.garcia@example.com', '1198765432', 'claveFuerte!@#'),
+('Carlos', 'Rodríguez', 'carlos.rodriguez@example.com', '1155554444', 'miContrasenaXD'),
+('Ana', 'Fernández', 'ana.fernandez@example.com', '1167890123', 'Passw0rdConNums'),
+('Luis', 'González', 'luis.gonzalez@example.com', '1133332222', 'seguridad_top_2024'),
+('Sofía', 'López', 'sofia.lopez@example.com', '1144441111', 'sofiaSegura#'),
+('Diego', 'Martínez', 'diego.martinez@example.com', '1177778888', 'DiegoPass$');
+
+INSERT INTO clubes (nom_club, dir_club, tel_usr, email_club) VALUES
+('Club Atlético Central', 'Av. Rivadavia 1234, Buenos Aires', '1145678901', 'info@clubcentral.com'),
+('Deportivo Norte', 'Calle 50 789, La Plata', '2215551234', 'contacto@deportivonorte.com'),
+('Gimnasio El Faro', 'Blvd. Marítimo 567, Mar del Plata', '2236789012', 'secretaria@elfaro.org'),
+('Asociación Vecinal Sur', 'Ruta 3 Km 25, San Justo', '1122334455', 'avisur@email.com'),
+('Club de Leones', 'Calle Principal 100, Córdoba', '3514987654', 'leonescba@clubes.org'),
+('Sociedad Italiana Concordia', 'Italia 45, Rosario', '3415123456', 'info@sociedaditaliana.com'),
+('Centro Cultural La Esquina', 'Bartolomé Mitre 200, Mendoza', '2614778899', 'contacto@laesquina.net');
+
+INSERT INTO canchas (id_club, tipo_cancha, tipo_deporte, precio_cancha) VALUES
+(1, 'Fútbol 11', 'Fútbol', 7500.00), 
+(1, 'Fútbol 5', 'Fútbol', 3500.00), 
+(2, 'Tenis - Polvo de Ladrillo', 'Tenis', 2800.00), 
+(2, 'Tenis - Cemento', 'Tenis', 2500.00), 
+(3, 'Piscina Olímpica', 'Natación', 1500.00), 
+(3, 'Gimnasio Cubierto', 'Crossfit', 2000.00),
+(4, 'Básquet Cubierta', 'Básquet', 4000.00), 
+(5, 'Salón de Usos Múltiples', 'Yoga', 1000.00), 
+(6, 'Pádel - Doble', 'Pádel', 3000.00), 
+(7, 'Teatro', 'Eventos', 9000.00); 
+
+INSERT INTO reservas (id_usr, id_cancha, fecha_res, hora_inicio, hora_fin, estado_res) VALUES
+(1, 1, '2025-06-15', '2025-06-15 10:00:00', '2025-06-15 11:30:00', 'Confirmada'), 
+(2, 3, '2025-06-16', '2025-06-16 14:00:00', '2025-06-16 15:00:00', 'Confirmada'), 
+(3, 5, '2025-06-17', '2025-06-17 09:00:00', '2025-06-17 10:00:00', 'Pendiente'), 
+(4, 7, '2025-06-18', '2025-06-18 19:00:00', '2025-06-18 20:30:00', 'Confirmada'), 
+(5, 2, '2025-06-19', '2025-06-19 11:00:00', '2025-06-19 12:00:00', 'Cancelada'), 
+(6, 4, '2025-06-20', '2025-06-20 16:00:00', '2025-06-20 17:00:00', 'Confirmada'), 
+(7, 1, '2025-06-21', '2025-06-21 18:00:00', '2025-06-21 19:00:00', 'Confirmada'); 
+
+INSERT INTO pagos (id_res, precio_res, fecha_pago, metodo_pago, estado_pago) VALUES
+(1, 7500.00, '2025-06-14 15:30:00', 'Tarjeta de Crédito', 'Pagado'),  
+(2, 2800.00, '2025-06-15 10:00:00', 'Transferencia Bancaria', 'Pagado'), 
+(3, 1500.00, '2025-06-17 08:45:00', 'Efectivo', 'Pendiente'),         
+(4, 4000.00, '2025-06-17 20:00:00', 'Tarjeta de Débito', 'Pagado'),   
+(5, 3500.00, '2025-06-18 09:15:00', 'MercadoPago', 'Reembolsado'),    
+(6, 2500.00, '2025-06-19 14:00:00', 'Tarjeta de Crédito', 'Pagado'),  
+(7, 7500.00, '2025-06-20 17:00:00', 'Transferencia Bancaria', 'Pagado');
+
+
+INSERT INTO empleados (id_club, nombre_empleado, apellido_empleado, dni_empleado, rol_empleado) VALUES
+(1, 'Roberto', 'Gómez', '25123456', 'Administrador de Sede'),
+(1, 'Valeria', 'Díaz', '30987654', 'Encargada de Mantenimiento'), 
+(2, 'Pedro', 'Sánchez', '28765432', 'Profesor de Tenis'), 
+(3, 'Laura', 'Ramírez', '32345678', 'Guardavidas'), 
+(3, 'Martín', 'Acosta', '35678901', 'Instructor de CrossFit'), 
+(4, 'Florencia', 'Núñez', '38112233', 'Coordinadora de Actividades'), 
+(5, 'Gonzalo', 'Pereyra', '29445566', 'Gerente de Eventos'), 
+(6, 'Romina', 'Vázquez', '31889900', 'Secretaria Administrativa'), 
+(7, 'Javier', 'Silva', '26778899', 'Director de Teatro'); 
+
+INSERT INTO opiniones (id_usr, id_cancha, calif_cancha, coment_cancha, fecha_coment) VALUES
+(1, 1, 5, 'Excelente cancha de fútbol 11, muy bien cuidada y con buen césped.', '2025-06-16 12:00:00'), 
+(2, 3, 4, 'Cancha de tenis de polvo de ladrillo en buen estado, aunque podría mejorar la red.', '2025-06-17 10:30:00'), 
+(3, 5, 3, 'La piscina es grande, pero el agua estaba un poco fría. Faltaría algún vestuario más cómodo.', '2025-06-18 09:45:00'), 
+(4, 7, 5, 'Cancha de básquet cubierta impecable, ideal para jugar con amigos. Iluminación perfecta.', '2025-06-19 21:00:00'), 
+(6, 4, 4, 'Buena cancha de tenis de cemento, ideal para practicar. Un poco de ruido exterior, pero no es grave.', '2025-06-21 17:00:00'), 
+(7, 1, 5, 'Siempre un placer jugar en esta cancha de fútbol. El personal es muy amable.', '2025-06-22 19:30:00');
+
+INSERT INTO mantenimiento (id_empleado, id_cancha, fecha_mant, tarea_mant) VALUES
+(1, 1, '2025-06-01 08:00:00', 'Revisión general de césped y riego de cancha de fútbol 11.'), 
+(2, 1, '2025-06-05 09:30:00', 'Limpieza profunda de vestuarios y áreas comunes de cancha de fútbol 11.'), 
+(3, 3, '2025-06-02 10:00:00', 'Mantenimiento de red y líneas en cancha de tenis de polvo de ladrillo.'),
+(4, 5, '2025-06-03 14:00:00', 'Control de calidad del agua y limpieza de bordes de piscina olímpica.'), 
+(2, 2, '2025-06-06 11:00:00', 'Pintura de líneas y revisión de arcos en cancha de fútbol 5.'), 
+(5, 7, '2025-06-07 16:00:00', 'Revisión de iluminación y estado del piso en cancha de básquet cubierta.'), 
+(1, 6, '2025-06-08 10:00:00', 'Inspección de equipos y ventilación en gimnasio cubierto.'),
+(6, 4, '2025-06-09 09:00:00', 'Revisión y ajustes de red en cancha de tenis de cemento.');
+
+INSERT INTO torneos (id_club, nom_torneo, cat_torneo, fecha_in, fecha_fin) VALUES
+(1, 'Torneo Apertura Fútbol 11', 'Masculino Adultos', '2025-07-01 09:00:00', '2025-09-30 20:00:00'), 
+(2, 'Copa de Tenis Primavera', 'Mixto Juvenil', '2025-08-10 10:00:00', '2025-08-17 18:00:00'), 
+(3, 'Campeonato de Natación Interclubes', 'Todas las Edades', '2025-07-20 08:00:00', '2025-07-20 17:00:00'), 
+(4, 'Liga de Básquet 3x3 Verano', 'Mixto Adultos', '2025-07-05 17:00:00', '2025-08-05 21:00:00'), 
+(1, 'Torneo Relámpago Fútbol 5', 'Mixto Libre', '2025-06-25 18:00:00', '2025-06-25 22:00:00'), 
+(6, 'Torneo de Pádel Dobles', 'Femenino Adultos', '2025-09-01 10:00:00', '2025-09-07 19:00:00'), 
+(5, 'Festival de Ajedrez Clubes Amigos', 'Abierto', '2025-10-10 14:00:00', '2025-10-12 18:00:00'); 
+
+INSERT INTO soporte (id_usr, mensaje_sop, fecha_ticket) VALUES
+(1, 'No puedo iniciar sesión en mi cuenta. ¿Podrían revisarlo?', '2025-06-01 10:00:00'), 
+(2, 'Quisiera cancelar mi reserva de cancha de tenis para el día 16/06.', '2025-06-02 14:30:00'), 
+(3, 'Tengo una pregunta sobre los precios de las membresías de piscina.', '2025-06-03 09:15:00'), 
+(4, 'Problemas con la carga de la aplicación en mi dispositivo móvil.', '2025-06-04 18:00:00'), 
+(5, 'Necesito modificar la hora de mi reserva de fútbol 5 del 19/06.', '2025-06-05 11:45:00'), 
+(6, 'Consulta sobre cómo inscribirme en un torneo de pádel.', '2025-06-06 16:00:00'); 
+
+
