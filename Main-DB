@@ -1,0 +1,171 @@
+CREATE database ReservasDeportivas;
+
+USE ReservasDeportivas;
+
+CREATE table usuarios (
+	id_usr int NOT NULL auto_increment primary key,
+    nom_usr varchar(50) NOT NULL,
+    ape_usr varchar(50) NOT NULL,
+    email_usr varchar(50) NOT NULL UNIQUE,
+    tel_usr varchar(20) NOT NULL,
+    pass_usr varchar(100) NOT NULL);
+    
+CREATE table clubes (
+	id_club int NOT NULL auto_increment primary key,
+    nom_club varchar(100) NOT NULL,
+    dir_club varchar(150) NOT NULL,
+    tel_usr varchar(20) NOT NULL,
+    email_club varchar(100) NOT NULL UNIQUE);
+    
+CREATE table canchas (
+	id_cancha int NOT NULL auto_increment primary key,
+    id_club int NOT NULL,
+    foreign key (id_club) references clubes(id_club),
+    tipo_cancha varchar(30) NOT NULL,
+    tipo_deporte varchar(30) NOT NULL,
+    precio_cancha decimal(10,2) NOT NULL);
+
+CREATE table reservas (
+	id_res int NOT NULL auto_increment primary key,
+    id_usr int NOT NULL,
+	foreign key (id_usr) references usuarios(id_usr),
+    id_cancha int NOT NULL,
+    foreign key (id_cancha) references canchas(id_cancha),
+    fecha_res date NOT NULL,
+    hora_inicio datetime NOT NULL,
+    hora_fin datetime NOT NULL,
+    estado_res varchar(30) NOT NULL);
+    
+CREATE table pagos (
+	id_pago int NOT NULL auto_increment primary key,
+    id_res int NOT NULL,
+	foreign key (id_res) references reservas(id_res),
+	precio_res decimal(10,2) NOT NULL,
+    fecha_pago datetime NOT NULL,
+    metodo_pago varchar(50) NOT NULL,
+    estado_pago varchar(20));
+    
+CREATE table empleados (
+	id_empleado int NOT NULL auto_increment primary key,
+    id_club int NOT NULL,
+	foreign key (id_club) references clubes(id_club),
+	nombre_empleado varchar(50) NOT NULL,
+    apellido_empleado varchar(50) NOT NULL,
+    dni_empleado varchar(10) NOT NULL,
+    rol_empleado varchar(100));
+    
+CREATE table opiniones (
+	id_opinion int NOT NULL auto_increment primary key,
+    id_usr int NOT NULL,
+    id_cancha int NOT NULL,
+	foreign key (id_usr) references usuarios(id_usr),
+    foreign key (id_cancha) references canchas(id_cancha),
+	calif_cancha int NOT NULL,
+    coment_cancha TEXT NOT NULL,
+    fecha_coment DATETIME);
+    
+CREATE table mantenimiento (
+	id_mant int NOT NULL auto_increment primary key,
+    id_empleado int NOT NULL,
+    id_cancha int NOT NULL,
+	foreign key (id_empleado) references empleados(id_empleado),
+    foreign key (id_cancha) references canchas(id_cancha),
+	fecha_mant DATETIME,
+    tarea_mant TEXT);
+
+CREATE table torneos (
+	id_torneo int NOT NULL auto_increment primary key,
+    id_club int NOT NULL,
+    foreign key (id_club) references clubes(id_club),
+	nom_torneo VARCHAR(100),
+    cat_torneo VARCHAR(100),
+    fecha_in DATETIME,
+    fecha_fin DATETIME);
+    
+CREATE table soporte (
+	id_ticket int NOT NULL auto_increment primary key,
+    id_usr int NOT NULL,
+    foreign key (id_usr) references usuarios(id_usr),
+	mensaje_sop TEXT,
+    fecha_ticket DATETIME);
+    
+    
+CREATE VIEW vista_reservas_usuarios AS
+SELECT
+    u.id_usr AS ID_Usuario,
+    CONCAT(u.nom_usr, ' ', u.ape_usr) AS Nombre_Completo,
+    ca.id_cancha AS ID_Cancha,
+    cl.nom_club AS Club,
+    r.fecha_res AS Fecha_Reserva,
+    r.hora_inicio AS Hora_Inicio,
+    r.hora_fin AS Hora_Fin,
+    p.estado_pago AS Estado_Pago,
+    p.precio_res AS Precio
+FROM reservas r
+JOIN usuarios u ON r.id_usr = u.id_usr
+JOIN canchas ca ON r.id_cancha = ca.id_cancha
+JOIN clubes cl ON ca.id_club = cl.id_club
+JOIN pagos p ON r.id_res = p.id_res;
+
+SELECT * FROM vista_reservas_usuarios;
+
+CREATE VIEW vista_reporte_mantenimiento AS
+SELECT
+    m.id_mant AS ID_Mantenimiento,
+    cl.nom_club AS Club,
+    ca.id_cancha AS ID_Cancha,
+    e.nombre_empleado AS Nombre_Empleado,
+    e.apellido_empleado AS Apellido_Empleado,
+    m.tarea_mant AS Tarea_Realizada,
+    m.fecha_mant AS Fecha_Mantenimiento
+FROM mantenimiento m
+JOIN canchas ca ON m.id_cancha = ca.id_cancha
+JOIN clubes cl ON ca.id_club = cl.id_club
+JOIN empleados e ON m.id_empleado = e.id_empleado;
+
+SELECT * FROM vista_reporte_mantenimiento;
+
+CREATE VIEW vista_opiniones_usuarios AS
+SELECT
+    o.id_opinion as ID_Opinion,
+    CONCAT(u.nom_usr, ' ', u.ape_usr) AS Nombre_Usuario,
+    cl.nom_club AS Nombre_Club,
+    o.coment_cancha AS Comentario,
+    o.calif_cancha AS Calificacion_Cancha,
+    o.fecha_coment AS Fecha_Comentario
+FROM opiniones o
+JOIN usuarios u ON o.id_usr = u.id_usr
+JOIN canchas ca ON ca.id_cancha = o.id_cancha 
+JOIN clubes cl ON ca.id_club = cl.id_club;
+
+SELECT * FROM vista_opiniones_usuarios;
+
+CREATE VIEW vista_empleados_por_club AS
+SELECT
+    e.id_empleado AS ID_Empleado,
+    e.nombre_empleado AS Nombre_Empleado,
+    e.apellido_empleado AS Apellido_Empleado,
+    e.rol_empleado AS Rol_Empleado,
+    cl.nom_club AS Nombre_Club
+FROM empleados e
+JOIN clubes cl ON e.id_club = cl.id_club;
+
+SELECT * FROM vista_empleados_por_club;
+
+CREATE VIEW vista_historial_pagos AS
+SELECT
+    p.id_pago AS ID_Pago,
+    CONCAT(u.nom_usr, ' ', u.ape_usr) AS Nombre_Usuario,
+    p.precio_res AS Precio_Reserva,
+    p.estado_pago AS Estado_Pago,
+    p.fecha_pago AS Fecha_Pago,
+    r.fecha_res AS Fecha_Reserva
+FROM pagos p
+JOIN reservas r ON p.id_res = r.id_res
+JOIN usuarios u ON r.id_usr = u.id_usr;
+
+SELECT * FROM vista_historial_pagos;
+
+
+
+
