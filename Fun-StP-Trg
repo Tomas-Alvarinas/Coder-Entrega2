@@ -1,0 +1,112 @@
+USE reservasdeportivas;
+
+DELIMITER //
+CREATE FUNCTION cantidadReservasPorCancha(id_cancha INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+  DECLARE cantidad INT;
+  SELECT COUNT(*) INTO cantidad
+  FROM reservas
+  WHERE reservas.id_cancha = id_cancha;
+  RETURN cantidad;
+END;
+//
+DELIMITER ;
+
+SELECT cantidadReservasPorCancha(1);
+
+DELIMITER //
+CREATE FUNCTION totalPagadoPorUsuario(p_id_usr INT)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+  DECLARE total DECIMAL(10,2);
+  SELECT SUM(p.precio_res) INTO total
+  FROM pagos p
+  JOIN reservas r ON p.id_res = r.id_res 
+  WHERE r.id_usr = p_id_usr AND p.estado_pago = 'Pagado'; 
+  
+  RETURN IFNULL(total, 0);
+END;
+//
+DELIMITER ;
+
+select totalPagadoPorUsuario(1);
+
+DELIMITER //
+CREATE PROCEDURE ActualizarEstadoReserva(
+    IN p_id_res INT,
+    IN p_nuevo_estado VARCHAR(30)
+)
+BEGIN
+    UPDATE reservas
+    SET estado_res = p_nuevo_estado
+    WHERE id_res = p_id_res;
+END //
+DELIMITER ;
+
+CALL ActualizarEstadoReserva(4, 'Confirmada');
+
+select * from reservas;
+
+DELIMITER //
+CREATE PROCEDURE ObtenerReservasPorUsuario(
+    IN p_id_usr INT
+)
+BEGIN
+    SELECT
+        r.id_res,
+        c.nom_club,
+        ca.tipo_cancha,
+        ca.tipo_deporte,
+        r.fecha_res,
+        r.hora_inicio,
+        r.hora_fin,
+        r.estado_res
+    FROM reservas r
+    JOIN canchas ca ON r.id_cancha = ca.id_cancha
+    JOIN clubes c ON ca.id_club = c.id_club
+    WHERE r.id_usr = p_id_usr
+    ORDER BY r.fecha_res DESC, r.hora_inicio DESC;
+END //
+DELIMITER ;
+
+CALL ObtenerReservasPorUsuario(2);
+select * from reservas;
+select * from canchas;
+
+DELIMITER //
+CREATE TRIGGER trg_validar_solapamiento_reserva
+BEFORE INSERT ON reservas
+FOR EACH ROW
+BEGIN
+    DECLARE v_solapamiento INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO v_solapamiento
+    FROM reservas
+    WHERE id_cancha = NEW.id_cancha
+      AND fecha_res = NEW.fecha_res
+      AND estado_res IN ('Confirmada', 'Pagada') 
+      AND (
+            (NEW.hora_inicio < hora_fin AND NEW.hora_fin > hora_inicio) 
+          );
+
+    IF v_solapamiento > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La cancha ya está reservada en el horario solicitado.';
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER trg_control_fecha_torneo
+BEFORE INSERT ON torneos
+FOR EACH ROW
+BEGIN
+    IF NEW.fecha_fin <= NEW.fecha_in THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La fecha de fin debe ser posterior a la fecha de inicio del torneo';
+    END IF;
+END //
+DELIMITER ;
